@@ -43,7 +43,7 @@ namespace IDR.PDFExtraction.Services
 
             return lineItem;
         }
-
+        
         private LineItem ProcessExtractedText(StringBuilder pageContent)
         {
             StringBuilder claimTitle = new();
@@ -61,7 +61,7 @@ namespace IDR.PDFExtraction.Services
             {
                 if (pdfData[i].Contains("Dispute Reference Number"))
                 {
-                    disputeReferenceNumber = pdfData[i].Replace("Dispute Reference Number:", "");
+                    disputeReferenceNumber = MiscTextFixes(pdfData[i]);
                 }
                 if (pdfData[i].Contains("Claim Number"))
                 {
@@ -71,7 +71,7 @@ namespace IDR.PDFExtraction.Services
                 if (pdfData[i] == "Service Code:")
                 {
                     serviceCode.Append($"{pdfData[i + 1]} _");
-                }                         
+                }
             }
             noticeDate = pageContent.ToString().Substring(pageContent.Length - 10);
 
@@ -82,7 +82,7 @@ namespace IDR.PDFExtraction.Services
                 NoticeDate = noticeDate
             };
         }
-
+       
         /// <summary>
         /// Create a list of Claims objects
         /// </summary>
@@ -94,18 +94,29 @@ namespace IDR.PDFExtraction.Services
         private List<Claim> GetClaims(int numberOfClaims, StringBuilder claimTitle, StringBuilder claimNumber, StringBuilder serviceCode)
         {
             List<Claim> claimList = new List<Claim>();
+            string fixedValue = string.Empty;
 
             for (int i = 0; i < numberOfClaims; i++)
             {
                 Claim claim = new()
                 {
-                    ClaimNumber = claimNumber.ToString().Split("_")[i],
+                    ClaimNumber = MiscTextFixes(claimNumber.ToString().Split("_")[i]),
                     ClaimTitle = claimTitle.ToString().Split("_")[i],
-                    ServiceCode = serviceCode.ToString().Split("_")[i].Replace("Place of Service Code:", "")
+                    ServiceCode = MiscTextFixes(serviceCode.ToString().Split("_")[i])
                 };
                 claimList.Add(claim);
             }
             return claimList;
+        }
+        
+        private static string MiscTextFixes(string stringToFix)
+        {
+            foreach (string? item in Constants.GetRules())
+            {
+                if (stringToFix.Contains(item))
+                    return stringToFix.Replace(item, "");
+            }
+            return stringToFix;
         }
     }
 }

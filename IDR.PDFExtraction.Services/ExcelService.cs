@@ -43,11 +43,11 @@ namespace IDR.PDFExtraction.Services
         }
         public void AddDataToExcel(string disputeReferenceNumber, string claimTitle, string claimNumber, string serviceCode, string noticeDate)
         {
-            myExcelWorksheet.Cells[rowNumber, "A"] = disputeReferenceNumber;
-            myExcelWorksheet.Cells[rowNumber, "B"] = claimTitle;
-            myExcelWorksheet.Cells[rowNumber, "C"] = claimNumber;
-            myExcelWorksheet.Cells[rowNumber, "D"] = serviceCode;
-            myExcelWorksheet.Cells[rowNumber, "E"] = noticeDate;
+            myExcelWorksheet.Cells[rowNumber, "A"] = disputeReferenceNumber.Trim();
+            myExcelWorksheet.Cells[rowNumber, "B"] = claimTitle.Trim();
+            myExcelWorksheet.Cells[rowNumber, "C"] = claimNumber.Trim();
+            myExcelWorksheet.Cells[rowNumber, "D"] = serviceCode.Trim();
+            myExcelWorksheet.Cells[rowNumber, "E"] = noticeDate.Trim();
             rowNumber++;
         }
         public void CloseExcel()
